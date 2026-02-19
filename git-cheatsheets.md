@@ -114,7 +114,7 @@ git push develop, main      # ❌ sintaxe inválida
 
 ## ✅ Fluxo recomendado (MVP)
 
-1. Trabalhar em `argos`
+1. Trabalhar em `argos` ou em `branch-seu-nome`
 2. Merge em `develop`
 3. Testar / estabilizar
 4. Merge controlado em `main`
