@@ -71,9 +71,7 @@ git log --oneline develop
 git checkout main
 git cherry-pick <hash-do-commit>
 ```
----
 
----
 ## O "Merge Fake" 🏆
 O Git vai pegar todas as mudanças da argos, aplicar na sua develop e deixar tudo "pronto para commitar" (staged), mas sem commitar.
 
