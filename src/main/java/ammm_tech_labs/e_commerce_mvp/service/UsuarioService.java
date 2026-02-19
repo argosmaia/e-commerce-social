@@ -18,9 +18,6 @@ import ammm_tech_labs.e_commerce_mvp.repository.UsuarioRepository;
 import ammm_tech_labs.e_commerce_mvp.response.APIResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 @Service
