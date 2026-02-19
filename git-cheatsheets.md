@@ -50,6 +50,8 @@ git commit -m "chore(build): ajusta configuração do Gradle"
 
 ```bash
 git checkout main
+# Mostra APENAS os nomes dos arquivos que existem em 'argos' mas não em 'develop' (ou que são diferentes)
+git diff --name-only develop argos
 git checkout develop -- build.gradle
 git add build.gradle
 git commit -m "chore(build): sincroniza build.gradle com develop"
@@ -69,7 +71,29 @@ git log --oneline develop
 git checkout main
 git cherry-pick <hash-do-commit>
 ```
+---
 
+---
+## O "Merge Fake" 🏆
+O Git vai pegar todas as mudanças da argos, aplicar na sua develop e deixar tudo "pronto para commitar" (staged), mas sem commitar.
+
+```bash
+git checkout develop
+git merge --squash argos
+```
+
+Remova o lixo:
+Se o .metadata ou qualquer arquivo que você não queira veio junto.
+
+```bash
+# Tira da área de stage (unstage)
+git restore --staged .metadata/
+
+# Descarta as alterações nesse arquivo/pasta (opcional, se quiser limpar)
+git restore .metadata/
+
+git commit -m "feat: traz funcionalidades da branch argos"
+```
 ---
 
 ## 🔁 Merge normal entre branches
