@@ -41,8 +41,8 @@ out/
 
 ### VS Code ###
 .vscode/
-/.metadata/
-
+.metadata
+.metadata/
 ### Arquivos de Sistema Operacional (Lixo) ###
 .DS_Store
 Thumbs.db
