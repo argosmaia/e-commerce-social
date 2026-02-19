@@ -5,7 +5,13 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### STS ###
+### Segredos e Configurações Locais (MUITO IMPORTANTE) ###
+.env
+# Bloqueia as duas variações de extensão para garantir
+/src/main/resources/application.yml
+/src/main/resources/application.yaml
+
+### STS / Eclipse ###
 .apt_generated
 .classpath
 .factorypath
@@ -13,7 +19,6 @@ build/
 .settings
 .springBeans
 .sts4-cache
-.env
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
@@ -36,3 +41,8 @@ out/
 
 ### VS Code ###
 .vscode/
+/.metadata/
+
+### Arquivos de Sistema Operacional (Lixo) ###
+.DS_Store
+Thumbs.db
