@@ -1,22 +1,44 @@
 # Git Cheatsheet — Projeto E-commerce MVP
 
-Este arquivo resume **o fluxo de branches e comandos Git** usados até agora no projeto.
+Este arquivo resume **o fluxo de branches e comandos Git** usados no projeto até agora.
 
 ---
 
 ## 🌳 Estrutura de Branches
 
 ```
-main        → produção / estável
-  ↑
-develop     → integração / base do trabalho
-  ↑
-argos       → branch pessoal de desenvolvimento
+main        → produção / estável (remota)
+develop     → integração
+argos       → branch pessoal
+marcos      → branch pessoal
 ```
 
 ---
 
-## 🚀 Criação de Branch Pessoal a partir da `develop`
+## 📦 Conceito Fundamental
+
+O Git separa internamente:
+
+```
+refs/heads/*              → branches locais
+refs/remotes/origin/*     → referências remotas
+```
+
+Quando alguém faz:
+
+```bash
+git clone <repo>
+```
+
+O Git:
+
+- Baixa todas as referências remotas
+- Faz checkout apenas da branch default (normalmente `main`)
+- Mantém as demais como `origin/<branch>`
+
+---
+
+## 🚀 Criar Branch Pessoal a partir da `develop`
 
 ```bash
 git checkout develop
@@ -30,73 +52,142 @@ Push inicial da branch:
 git push -u origin argos
 ```
 
+O `-u` cria o vínculo de rastreamento (upstream).
+
 ---
 
-## 🧱 Commit de Alterações Comuns (ex: build.gradle)
+## 🔎 Fetch vs Pull
 
-### Commit na branch base (`develop`)
+### `git fetch`
+
+- Atualiza referências remotas
+- Não altera sua branch atual
+- Traz novas branches do servidor
+
+Exemplo de saída:
+
+```
+[new branch] marcos -> origin/marcos
+```
+
+Isso cria apenas:
+
+```
+origin/marcos
+```
+
+Ainda não cria branch local.
+
+---
+
+### `git pull`
+
+Equivale a:
 
 ```bash
-git checkout develop
-git add build.gradle
-git commit -m "chore(build): ajusta configuração do Gradle"
+git fetch
+git merge <upstream>
+```
+
+Ele **não cria novas branches automaticamente**.
+
+---
+
+## 🔁 Transformar Branch Remota em Branch Local
+
+Após:
+
+```bash
+git fetch
+```
+
+Verifique as remotas:
+
+```bash
+git branch -r
+```
+
+Se aparecer:
+
+```
+origin/marcos
+```
+
+Crie a branch local:
+
+```bash
+git switch marcos
+```
+
+ou explicitamente:
+
+```bash
+git checkout -b marcos origin/marcos
+```
+
+O Git:
+
+- Cria `refs/heads/marcos`
+- Configura tracking para `origin/marcos`
+
+Verifique com:
+
+```bash
+git branch -vv
 ```
 
 ---
 
-## 🔀 Trazer **apenas um arquivo** de outra branch
+## 🔀 Trazer Apenas Um Arquivo de Outra Branch
 
-### Caso: trazer `build.gradle` da `develop` para a `main`
+Exemplo: trazer `build.gradle` da `develop` para `main`
 
 ```bash
 git checkout main
-# Mostra APENAS os nomes dos arquivos que existem em 'argos' mas não em 'develop' (ou que são diferentes)
-git diff --name-only develop argos
 git checkout develop -- build.gradle
 git add build.gradle
 git commit -m "chore(build): sincroniza build.gradle com develop"
 git push origin main
 ```
 
-> ⚠️ Isso **não faz merge completo** — apenas copia o arquivo escolhido.
+Isso **não faz merge completo** — apenas copia o arquivo escolhido.
 
 ---
 
-## 🍒 Cherry-pick (quando o commit é isolado)
+## 🍒 Cherry-pick
 
-Usar apenas se o commit mexeu **somente** no que você quer levar.
+Trazer um commit específico:
 
 ```bash
 git log --oneline develop
 git checkout main
-git cherry-pick <hash-do-commit>
+git cherry-pick <hash>
 ```
 
-## O "Merge Fake" 🏆
-O Git vai pegar todas as mudanças da argos, aplicar na sua develop e deixar tudo "pronto para commitar" (staged), mas sem commitar.
+---
+
+## 🏆 Merge Squash ("Merge Fake")
+
+Aplica mudanças sem manter histórico da branch:
 
 ```bash
 git checkout develop
 git merge --squash argos
 ```
 
-Remova o lixo:
-Se o .metadata ou qualquer arquivo que você não queira veio junto.
+Remover arquivos indesejados:
 
 ```bash
-# Tira da área de stage (unstage)
 git restore --staged .metadata/
-
-# Descarta as alterações nesse arquivo/pasta (opcional, se quiser limpar)
 git restore .metadata/
-
 git commit -m "feat: traz funcionalidades da branch argos"
 ```
+
 ---
 
-## 🔁 Merge normal entre branches
+## 🔁 Merge Normal
 
-### De `argos` → `develop`
+### `argos` → `develop`
 
 ```bash
 git checkout develop
@@ -104,7 +195,7 @@ git merge argos
 git push origin develop
 ```
 
-### De `develop` → `main`
+### `develop` → `main`
 
 ```bash
 git checkout main
@@ -114,33 +205,99 @@ git push origin main
 
 ---
 
+## 🗑 Remover Branch do Remoto
+
+Apagar do servidor:
+
+```bash
+git push origin --delete develop
+```
+
+Isso remove apenas do remoto.
+
+---
+
+## 🔧 Remover Vínculo com Remoto (Unset Upstream)
+
+Se quiser que a branch seja apenas local:
+
+```bash
+git branch --unset-upstream develop
+```
+
+Verificar tracking:
+
+```bash
+git branch -vv
+```
+
+---
+
+## 🧹 Limpar Referências Remotas Mortas
+
+Após apagar branch do remoto:
+
+```bash
+git fetch --prune
+```
+
+Remove `origin/<branch>` inexistentes.
+
+---
+
+## 📡 Comportamento Após Clone
+
+Quando alguém clona:
+
+```bash
+git clone <repo>
+```
+
+Ele recebe:
+
+- Todas as referências remotas
+- Apenas a branch default ativa (`main`)
+
+Para acessar outra branch:
+
+```bash
+git fetch
+git switch develop
+```
+
+---
+
 ## ❌ O que NÃO existe no Git
 
 ```bash
-git commit --all-branches   # ❌ não existe
-git push develop, main      # ❌ sintaxe inválida
+git commit --all-branches
+git push develop, main
 ```
 
-> Commits sempre pertencem à **branch atual**.
+Commits pertencem sempre à **branch atual**.
 
 ---
 
-## 🧠 Regras de Ouro
+## 🎯 Fluxo Atual do Projeto
 
-* Infra compartilhada (Gradle, Docker, CI): **commit uma vez**, propague com merge ou cherry-pick
-* Arquivo isolado: `git checkout <branch> -- <arquivo>`
-* Feature pronta: `merge`
-* Correção pontual: `cherry-pick`
-
----
-
-## ✅ Fluxo recomendado (MVP)
-
-1. Trabalhar em `argos` ou em `branch-seu-nome`
-2. Merge em `develop`
-3. Testar / estabilizar
-4. Merge controlado em `main`
+1. Trabalhar em `argos`, `marcos` ou branch pessoal
+2. Push para remoto quando precisar compartilhar
+3. Integrar via `develop`
+4. Promover para `main` quando estabilizado
 
 ---
 
-📌 Este cheatsheet reflete o fluxo atual do projeto e deve ser mantido atualizado conforme o time evoluir.
+## 📌 Resumo Técnico
+
+| Comando | Função |
+|----------|------------|
+| `git fetch` | Atualiza referências remotas |
+| `git pull` | Fetch + merge da branch atual |
+| `git switch <branch>` | Cria branch local se existir no remoto |
+| `git push -u origin <branch>` | Publica branch e cria tracking |
+| `git branch -vv` | Mostra upstream |
+| `git fetch --prune` | Remove refs remotas mortas |
+
+---
+
+Este documento reflete o estado atual do workflow do projeto.
