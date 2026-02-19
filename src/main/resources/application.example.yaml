@@ -3,14 +3,14 @@ spring:
     name: E-Commerce-mvp
     
   datasource:
-    url: jdbc:postgresql://localhost:5432/ecommercesocial
-    username: argosdgti
-    password: "12345678" 
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
     open-in-view: false
     properties:
       hibernate:
@@ -27,7 +27,6 @@ server:
 
 security:
   jwt:
-    # Defini valores padrão para dev. Se tiver outros, pode trocar.
-    secret: minha_chave_secreta_super_segura_para_desenvolvimento_local_123
-    issuer: e-commerce-api
-    expiration: 86400000 # 24 horas em milissegundos
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER}
+    expiration: ${JWT_EXPIRATION}
