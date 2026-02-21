@@ -2,7 +2,7 @@ package ammm_tech_labs.e_commerce_mvp.controller;
 
 import java.util.UUID;
 
-import org.springframework.boot.data.autoconfigure.web.DataWebProperties.Pageable;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

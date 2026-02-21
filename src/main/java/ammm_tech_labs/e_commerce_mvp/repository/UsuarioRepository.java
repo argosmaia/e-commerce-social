@@ -6,10 +6,11 @@ import java.util.UUID;
 import org.springframework.boot.data.autoconfigure.web.DataWebProperties.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import ammm_tech_labs.e_commerce_mvp.dto.list.ListarUsuarioDTO;
 import ammm_tech_labs.e_commerce_mvp.models.Usuario;
-
+@Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
 
     boolean existsByEmail(String email);
