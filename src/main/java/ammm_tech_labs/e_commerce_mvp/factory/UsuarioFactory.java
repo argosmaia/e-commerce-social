@@ -13,7 +13,7 @@ import ammm_tech_labs.e_commerce_mvp.dto.create.CriarUsuarioDTO;
 @Component
 public class UsuarioFactory {
 
-    private final Faker faker = new Faker(new Locale("pt-BR"));
+    private final Faker faker = new Faker(Locale.of("pt", "BR"));
 
     /**
      * Gera um CriarUsuarioDTO com dados aleatórios realistas.
@@ -22,7 +22,7 @@ public class UsuarioFactory {
         // Nome e sobrenome separados
         String nome = faker.name().firstName();
         String sobrenome = faker.name().lastName();
-        String nomeCompleto = nome + " " + sobrenome;
+        String username = (nome.charAt(0) + sobrenome).toLowerCase().replaceAll("[^a-z]", "") + faker.number().digits(3);
 
         // Email baseado no nome
         String email = (nome + "." + sobrenome + "@example.com")
@@ -34,6 +34,9 @@ public class UsuarioFactory {
                 .minusYears(18 + faker.random().nextInt(0, 32))
                 .withMonth(faker.random().nextInt(1, 12))
                 .withDayOfMonth(faker.random().nextInt(1, 28));
+
+        // Idade calculada a partir da data de aniversário
+        int idade = LocalDate.now().getYear() - aniversario.getYear();
 
         // Senha aleatória de 8 a 16 caracteres
         String senha = faker.internet().password(8, 16, true, true, true);
@@ -62,12 +65,15 @@ public class UsuarioFactory {
         // );
 
         return new CriarUsuarioDTO(
-                nomeCompleto,
-                aniversario,
-                gerarCPFValido(),
-                email,
+                nome,
+                sobrenome,
+                username,
                 senha,
                 telefone,
+                idade,
+                email,
+                aniversario.atStartOfDay(), // Convertendo LocalDate para LocalDateTime
+                gerarCPFValido()
                 // endereco
         );
     }

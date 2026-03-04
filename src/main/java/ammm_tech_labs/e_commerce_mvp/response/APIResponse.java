@@ -1,8 +1,6 @@
 package ammm_tech_labs.e_commerce_mvp.response; 
 
-import org.springframework.data.domain.Page;
 
-import ammm_tech_labs.e_commerce_mvp.dto.list.ListarUsuarioDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
