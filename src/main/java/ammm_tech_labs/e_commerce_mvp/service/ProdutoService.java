@@ -32,7 +32,7 @@ public class ProdutoService {
             return APIResponse.conflito("Nome de produto já cadastrado");
         }
 
-        var produto = new Produto(dados.nome(), dados.preco());
+        var produto = new Produto(dados);
 
         produtos.save(produto);
 
@@ -58,27 +58,24 @@ public class ProdutoService {
         );
     }
 
+
     @Transactional
-public APIResponse<ProdutoDTO> atualizarProduto(UUID id, AtualizarProdutoDTO dados) {
-    var produto = produtos.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
+	public APIResponse<ProdutoDTO> atualizarProduto(UUID id, AtualizarProdutoDTO dados) {
+		var produto = produtos.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
-    if (dados.nome() != null && !dados.nome().equals(produto.getNome())) {
-    if (produtos.existsByNome(dados.nome())) {
-        return APIResponse.conflito("Nome de produto já cadastrado");
-    }
-    produto.atualizarNome(dados.nome());
-}
+		produto.atualizar(
+				dados.nome(),
+				dados.preco(),
+                dados.fotoUrl(),
+                dados.descricao()
+		);
 
-    if (dados.preco() != null) {
-        produto.atualizarPreco(dados.preco());
-    }
-
-    return APIResponse.sucesso(
-            "Produto atualizado",
-            mapper.toDTO(produto)
-    );
-}
+		return APIResponse.sucesso(
+				"Produto atualizado",
+				mapper.toDTO(produto)
+		);
+	}
 
     @Transactional
     public APIResponse<Void> deletarProduto(UUID id) {
@@ -90,10 +87,6 @@ public APIResponse<ProdutoDTO> atualizarProduto(UUID id, AtualizarProdutoDTO dad
 
         return APIResponse.sucesso("Produto deletado");
     }
-
-
-
-    
     
 }
 

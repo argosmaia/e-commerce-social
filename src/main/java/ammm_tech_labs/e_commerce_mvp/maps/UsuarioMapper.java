@@ -25,10 +25,13 @@ public interface UsuarioMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "username", ignore = true)
     @Mapping(target = "senha", ignore = true)
-    @Mapping(target = "desejos", ignore = true)
-    @Mapping(target = "compras", ignore = true)
+    // @Mapping(target = "desejos", ignore = true)
+    // @Mapping(target = "compras", ignore = true)
     Usuario toEntity(CriarUsuarioDTO dto);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    @Mapping(target = "cpf", ignore = true)
+    @Mapping(target = "idade", ignore = true)
+    @Mapping(target = "senha", ignore = true)
     void atualizar(@MappingTarget Usuario usuario, AtualizarUsuarioDTO dto);
 }

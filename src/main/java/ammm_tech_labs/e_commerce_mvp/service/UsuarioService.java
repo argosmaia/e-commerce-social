@@ -22,74 +22,83 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class UsuarioService {
-
     private final UsuarioRepository usuarios;
-    private final UsuarioMapper mapper;
-    private final PasswordEncoder passwordEncoder;
+	private final UsuarioMapper mapper;
+	private final PasswordEncoder passwordEncoder;
 
-    @Transactional
-    public APIResponse<UsuarioDTO> cadastrarUsuario(CriarUsuarioDTO dados) {
+	@Transactional
+	public APIResponse<UsuarioDTO> cadastrarUsuario(CriarUsuarioDTO dados) {
+		if (usuarios.existsByEmail(dados.email())) {
+			return APIResponse.conflito("Email já cadastrado");
+		}
 
-        if (usuarios.existsByEmail(dados.email())) {
-            return APIResponse.conflito("Email já cadastrado");
-        }
+		var senhaHash = passwordEncoder.encode(dados.senha());
 
-        var senhaHash = passwordEncoder.encode(dados.senha());
+		var usuario = new Usuario(
+				dados.primeiroNome(),
+				dados.ultimoNome(),
+				dados.username(),
+				senhaHash,
+				dados.telefone(),
+				dados.email(),
+				dados.dataNascimento(),
+				dados.idade(),
+				dados.cpf()
+		);
 
-        var usuario = new Usuario(
-                dados.primeiroNome(),
-                dados.ultimoNome(),
-                dados.username(),
-                senhaHash,
-                dados.telefone(),
-                dados.email(),
-                dados.dataNascimento(),
-                dados.idade(),
-                dados.cpf()
-        );
+		usuarios.save(usuario);
 
-        usuarios.save(usuario);
+		return APIResponse.criado(
+				"Usuário criado com sucesso",
+				mapper.toDTO(usuario)
+		);
+	}
 
-        return APIResponse.criado(
-                "Usuário criado com sucesso",
-                mapper.toDTO(usuario)
-        );
-    }
-
-    public APIResponse<Page<ListarUsuarioDTO>> listarUsuarios(Pageable paginacao) {
-        var paginas = usuarios.findAll(paginacao)
-                              .map(usuario -> mapper.toListarDTO(usuario));
-        return APIResponse.sucesso("Lista de usuários", paginas);
-    }
+	public APIResponse<Page<ListarUsuarioDTO>> listarUsuarios(Pageable paginacao) {
+		var paginas = usuarios.findAll(paginacao)
+						.map(usuario -> mapper.toListarDTO(usuario));
+		return APIResponse.sucesso("Lista de usuários", paginas);
+}
 
 
-    public APIResponse<VerUsuarioDTO> verUsuario(UUID id) {
-        var usuario = usuarios.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+	public APIResponse<VerUsuarioDTO> verUsuario(UUID id) {
+		var usuario = usuarios.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        return APIResponse.sucesso(
-                "Usuário encontrado",
-                mapper.toVerDTO(usuario)
-        );
-    }
+		return APIResponse.sucesso(
+				"Usuário encontrado",
+				mapper.toVerDTO(usuario)
+		);
+	}
 
-    @Transactional
-    public APIResponse<UsuarioDTO> atualizarUsuario(UUID id, AtualizarUsuarioDTO dados) {
-        var usuario = usuarios.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+	@Transactional
+	public APIResponse<UsuarioDTO> atualizarUsuario(UUID id, AtualizarUsuarioDTO dados) {
+		var usuario = usuarios.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
-        usuario.atualizar(
-                dados.primeiroNome(),
-                dados.ultimoNome(),
-                dados.username(),
-                dados.telefone(),
-                dados.email(),
-                dados.dataNascimento()
-        );
+		usuario.atualizar(
+				dados.primeiroNome(),
+				dados.ultimoNome(),
+				dados.username(),
+				dados.telefone(),
+				dados.email(),
+				dados.dataNascimento()
+		);
 
-        return APIResponse.sucesso(
-                "Usuário atualizado",
-                mapper.toDTO(usuario)
-        );
-    }
+		return APIResponse.sucesso(
+				"Usuário atualizado",
+				mapper.toDTO(usuario)
+		);
+	}
+
+	@Transactional
+	public APIResponse<?> deletarUsuario(UUID id) {
+		if (!usuarios.existsById(id)) {
+				throw new EntityNotFoundException("Usuário não encontrado");
+		}
+
+		usuarios.deleteById(id);
+
+		return APIResponse.sucesso("Usuário deletado com sucesso");
+	}
 }

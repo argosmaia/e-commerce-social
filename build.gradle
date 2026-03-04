@@ -10,7 +10,7 @@ description = 'Projeto Spring MVP para um site de ecommerce'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(23)
+		languageVersion = JavaLanguageVersion.of(25)
 	}
 }
 
