@@ -23,8 +23,6 @@ public interface UsuarioMapper {
     VerUsuarioDTO toVerDTO(Usuario usuario);
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "username", ignore = true)
-    @Mapping(target = "senha", ignore = true)
     // @Mapping(target = "desejos", ignore = true)
     // @Mapping(target = "compras", ignore = true)
     Usuario toEntity(CriarUsuarioDTO dto);

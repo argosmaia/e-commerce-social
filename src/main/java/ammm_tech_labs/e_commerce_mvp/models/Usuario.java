@@ -1,6 +1,8 @@
 package ammm_tech_labs.e_commerce_mvp.models;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.UUID;
 
 import ammm_tech_labs.e_commerce_mvp.dto.create.CriarUsuarioDTO;
@@ -84,6 +86,10 @@ public class Usuario {
         return (sobrenome + nome)
                 .toLowerCase()
                 .replaceAll("\s+", "");
+    }
+
+    public int getIdade() {
+        return Period.between(dataNascimento.toLocalDate(), LocalDate.now()).getYears();
     }
 
     public void atualizar(String primeiroNome, String ultimoNome, String username, String telefone, String email, LocalDateTime dataNascimento) {

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import com.github.javafaker.Faker;
 
 import ammm_tech_labs.e_commerce_mvp.dto.create.CriarUsuarioDTO;
+import ammm_tech_labs.e_commerce_mvp.validations.CPFValido;
 
 @Component
 public class UsuarioFactory {
@@ -25,7 +26,7 @@ public class UsuarioFactory {
         String username = (nome.charAt(0) + sobrenome).toLowerCase().replaceAll("[^a-z]", "") + faker.number().digits(3);
 
         // Email baseado no nome
-        String email = (nome + "." + sobrenome + "@example.com")
+        String email = (nome + "." + sobrenome + "@gmail.com")
                 .toLowerCase()
                 .replaceAll("[^a-z0-9\\.]", "");
 
@@ -37,7 +38,7 @@ public class UsuarioFactory {
 
         // Idade calculada a partir da data de aniversário
         int idade = LocalDate.now().getYear() - aniversario.getYear();
-
+        
         // Senha aleatória de 8 a 16 caracteres
         String senha = faker.internet().password(8, 16, true, true, true);
 
@@ -73,29 +74,8 @@ public class UsuarioFactory {
                 idade,
                 email,
                 aniversario.atStartOfDay(), // Convertendo LocalDate para LocalDateTime
-                gerarCPFValido()
+                CPFValido.gerar()
                 // endereco
         );
-    }
-
-    /**
-     * Gera CPF válido (simplificado, sem validação real, apenas números aleatórios)
-     */
-    private String gerarCPFValido() {
-        ThreadLocalRandom random = ThreadLocalRandom.current();
-        int n1 = random.nextInt(0, 10);
-        int n2 = random.nextInt(0, 10);
-        int n3 = random.nextInt(0, 10);
-        int n4 = random.nextInt(0, 10);
-        int n5 = random.nextInt(0, 10);
-        int n6 = random.nextInt(0, 10);
-        int n7 = random.nextInt(0, 10);
-        int n8 = random.nextInt(0, 10);
-        int n9 = random.nextInt(0, 10);
-        int d1 = 0; // Pode implementar cálculo real do dígito verificador se quiser
-        int d2 = 0;
-
-        return String.format("%d%d%d.%d%d%d.%d%d%d-%d%d",
-                n1, n2, n3, n4, n5, n6, n7, n8, n9, d1, d2);
     }
 }
