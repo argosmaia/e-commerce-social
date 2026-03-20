@@ -1,5 +1,8 @@
 package ammm_tech_labs.e_commerce_mvp.seeders;
 
+import java.util.List;
+import java.util.stream.IntStream;
+
 import org.springframework.stereotype.Component;
 
 import ammm_tech_labs.e_commerce_mvp.dto.create.CriarUsuarioDTO;
@@ -21,7 +24,6 @@ public class UsuarioSeeder {
     }
 
     public void run() {
-
         List<Usuario> usuarios = IntStream.range(0,10)
             .mapToObj(i -> usuarioMapper.toEntity(
                 usuarioFactory.criarUsuarioDTOAleatorio()
