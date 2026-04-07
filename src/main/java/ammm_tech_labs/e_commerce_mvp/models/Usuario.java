@@ -18,8 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity(name="Usuario")
-@Table(name="usuarios")
+@Entity(name = "Usuario")
+@Table(name = "usuarios")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -42,23 +42,22 @@ public class Usuario {
     private String email;
 
     private LocalDateTime dataNascimento;
-    private int idade; // futuramente usar a data de nascimento para calcular a idade
-    
+    private int idade;
+
     @Column(unique = true, nullable = false)
     private String cpf;
-    
+
     // Sobrecarga do construtor para criar um usuário a partir de dados essenciais
     public Usuario(
-        String primeiroNome, 
-        String ultimoNome, 
-        String username, 
-        String senha,
-        String telefone,
-        String email, 
-        LocalDateTime dataNascimento,
-        int idade,
-        String cpf
-        ) {
+            String primeiroNome,
+            String ultimoNome,
+            String username,
+            String senha,
+            String telefone,
+            String email,
+            LocalDateTime dataNascimento,
+            int idade,
+            String cpf) {
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
         this.username = gerarUsername(primeiroNome, ultimoNome);
@@ -77,7 +76,7 @@ public class Usuario {
         this.senha = dados.senha();
         this.telefone = dados.telefone();
         this.email = dados.email();
-        this.dataNascimento = dados.dataNascimento();
+        setDataNascimento(dados.dataNascimento());
         this.cpf = dados.cpf();
     }
 
@@ -88,17 +87,21 @@ public class Usuario {
                 .replaceAll("\s+", "");
     }
 
-    public int getIdade() {
-        return Period.between(dataNascimento.toLocalDate(), LocalDate.now()).getYears();
+    public void setDataNascimento(LocalDateTime dataNascimento) {
+        this.dataNascimento = dataNascimento;
+        this.idade = Period.between(dataNascimento.toLocalDate(), LocalDate.now()).getYears();
     }
 
-    public void atualizar(String primeiroNome, String ultimoNome, String username, String telefone, String email, LocalDateTime dataNascimento) {
+    public void atualizar(String primeiroNome, String ultimoNome, String username, String telefone, String email,
+            LocalDateTime dataNascimento) {
         this.primeiroNome = primeiroNome != null ? primeiroNome : this.primeiroNome;
         this.ultimoNome = ultimoNome != null ? ultimoNome : this.ultimoNome;
         this.username = gerarUsername(this.primeiroNome, this.ultimoNome);
-        //  this.username = username != null ? username : this.username;
+        // this.username = username != null ? username : this.username;
         this.telefone = telefone != null ? telefone : this.telefone;
         this.email = email != null ? email : this.email;
-        this.dataNascimento = dataNascimento != null ? dataNascimento : this.dataNascimento;
+        if (dataNascimento != null) {
+            setDataNascimento(dataNascimento);
+        }
     }
 }
