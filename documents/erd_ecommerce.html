@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', monospace, sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    padding: 24px;
+    min-height: 100vh;
+  }
+  h1 {
+    text-align: center;
+    font-size: 18px;
+    color: #a78bfa;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 24px;
+  }
+  .legend {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #94a3b8; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .table {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    font-size: 11px;
+  }
+  .table-header {
+    padding: 7px 10px;
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .table-header .icon { font-size: 13px; }
+  .table-body { background: #131720; }
+  .field {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-top: 1px solid #1e293b;
+    gap: 6px;
+  }
+  .field-name { color: #e2e8f0; flex: 1; }
+  .field-type { color: #475569; font-size: 10px; font-family: monospace; }
+  .badge {
+    font-size: 9px;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+  }
+  .pk { background: #854d0e; color: #fde68a; }
+  .fk { background: #1e3a5f; color: #7dd3fc; }
+  .uk { background: #3b1f6b; color: #c4b5fd; }
+
+  /* Group colors */
+  .group-user .table-header { background: #1a2744; border-bottom: 2px solid #3b82f6; color: #93c5fd; }
+  .group-catalog .table-header { background: #1a2e1a; border-bottom: 2px solid #22c55e; color: #86efac; }
+  .group-commerce .table-header { background: #2d1a2e; border-bottom: 2px solid #a855f7; color: #d8b4fe; }
+  .group-payment .table-header { background: #2d1f0e; border-bottom: 2px solid #f97316; color: #fdba74; }
+  .group-review .table-header { background: #2d2210; border-bottom: 2px solid #eab308; color: #fde68a; }
+  .group-aux .table-header { background: #1a2428; border-bottom: 2px solid #06b6d4; color: #67e8f9; }
+
+  .section-label {
+    grid-column: 1 / -1;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #334155;
+    padding: 4px 0 2px 0;
+    border-bottom: 1px solid #1e293b;
+  }
+
+  .note {
+    grid-column: 1 / -1;
+    background: #1e293b;
+    border-left: 3px solid #a78bfa;
+    border-radius: 4px;
+    padding: 8px 12px;
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 4px;
+  }
+  .note strong { color: #c4b5fd; }
+</style>
+</head>
+<body>
+<h1>📦 E-Commerce — Diagrama do Banco de Dados</h1>
+<div class="subtitle">Spring Boot · PostgreSQL · Projeto de Portfólio</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div> Usuários</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div> Catálogo</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#a855f7"></div> Carrinho / Pedido</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div> Pagamento</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#eab308"></div> Avaliações</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div> Auxiliares</div>
+</div>
+
+<div class="grid">
+
+  <!-- USERS -->
+  <div class="section-label">👤 Usuários & Endereços</div>
+
+  <div class="table group-user">
+    <div class="table-header"><span class="icon">👤</span> users</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="field-name">name</span><span class="field-type">VARCHAR(120)</span></div>
+      <div class="field"><span class="badge uk">UK</span><span class="field-name">email</span><span class="field-type">VARCHAR(200)</span></div>
+      <div class="field"><span class="field-name">password_hash</span><span class="field-type">VARCHAR(255)</span></div>
+      <div class="field"><span class="field-name">role</span><span class="field-type">ENUM(CUSTOMER,ADMIN)</span></div>
+      <div class="field"><span class="field-name">is_active</span><span class="field-type">BOOLEAN</span></div>
+      <div class="field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-user">
+    <div class="table-header"><span class="icon">📍</span> addresses</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">user_id</span><span class="field-type">→ users</span></div>
+      <div class="field"><span class="field-name">label</span><span class="field-type">VARCHAR(50)</span></div>
+      <div class="field"><span class="field-name">street</span><span class="field-type">VARCHAR(200)</span></div>
+      <div class="field"><span class="field-name">number</span><span class="field-type">VARCHAR(10)</span></div>
+      <div class="field"><span class="field-name">complement</span><span class="field-type">VARCHAR(100)</span></div>
+      <div class="field"><span class="field-name">city</span><span class="field-type">VARCHAR(100)</span></div>
+      <div class="field"><span class="field-name">state</span><span class="field-type">CHAR(2)</span></div>
+      <div class="field"><span class="field-name">zip_code</span><span class="field-type">VARCHAR(9)</span></div>
+      <div class="field"><span class="field-name">is_default</span><span class="field-type">BOOLEAN</span></div>
+    </div>
+  </div>
+
+  <div style="grid-column: span 2;"></div>
+
+  <!-- CATALOG -->
+  <div class="section-label">🛒 Catálogo de Produtos (SKU / Variações)</div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">📂</span> categories</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">parent_id</span><span class="field-type">→ categories</span></div>
+      <div class="field"><span class="field-name">name</span><span class="field-type">VARCHAR(100)</span></div>
+      <div class="field"><span class="field-name">slug</span><span class="field-type">VARCHAR(120)</span></div>
+      <div class="field"><span class="field-name">is_active</span><span class="field-type">BOOLEAN</span></div>
+    </div>
+  </div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">📦</span> products</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">category_id</span><span class="field-type">→ categories</span></div>
+      <div class="field"><span class="field-name">name</span><span class="field-type">VARCHAR(200)</span></div>
+      <div class="field"><span class="field-name">description</span><span class="field-type">TEXT</span></div>
+      <div class="field"><span class="field-name">brand</span><span class="field-type">VARCHAR(100)</span></div>
+      <div class="field"><span class="field-name">is_active</span><span class="field-type">BOOLEAN</span></div>
+      <div class="field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">🏷️</span> product_attributes</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">product_id</span><span class="field-type">→ products</span></div>
+      <div class="field"><span class="field-name">name</span><span class="field-type">VARCHAR(80)</span></div>
+    </div>
+  </div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">🔖</span> attribute_values</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">attribute_id</span><span class="field-type">→ product_attributes</span></div>
+      <div class="field"><span class="field-name">value</span><span class="field-type">VARCHAR(100)</span></div>
+    </div>
+  </div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">🔢</span> skus</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">product_id</span><span class="field-type">→ products</span></div>
+      <div class="field"><span class="badge uk">UK</span><span class="field-name">sku_code</span><span class="field-type">VARCHAR(50)</span></div>
+      <div class="field"><span class="field-name">price</span><span class="field-type">DECIMAL(10,2)</span></div>
+      <div class="field"><span class="field-name">is_active</span><span class="field-type">BOOLEAN</span></div>
+    </div>
+  </div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">🔗</span> sku_attribute_values</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk fk">PK/FK</span><span class="field-name">sku_id</span><span class="field-type">→ skus</span></div>
+      <div class="field"><span class="badge pk fk">PK/FK</span><span class="field-name">attribute_value_id</span><span class="field-type">→ attr_values</span></div>
+    </div>
+  </div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">📊</span> inventory</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk uk">FK/UK</span><span class="field-name">sku_id</span><span class="field-type">→ skus</span></div>
+      <div class="field"><span class="field-name">quantity</span><span class="field-type">INT</span></div>
+      <div class="field"><span class="field-name">updated_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-catalog">
+    <div class="table-header"><span class="icon">🖼️</span> product_images</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">product_id</span><span class="field-type">→ products</span></div>
+      <div class="field"><span class="badge fk">FK?</span><span class="field-name">sku_id</span><span class="field-type">→ skus (nullable)</span></div>
+      <div class="field"><span class="field-name">url</span><span class="field-type">VARCHAR(500)</span></div>
+      <div class="field"><span class="field-name">is_primary</span><span class="field-type">BOOLEAN</span></div>
+      <div class="field"><span class="field-name">sort_order</span><span class="field-type">INT</span></div>
+    </div>
+  </div>
+
+  <!-- COMMERCE -->
+  <div class="section-label">🛍️ Carrinho, Wishlist & Pedidos</div>
+
+  <div class="table group-commerce">
+    <div class="table-header"><span class="icon">🛒</span> carts</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk uk">FK/UK</span><span class="field-name">user_id</span><span class="field-type">→ users</span></div>
+      <div class="field"><span class="field-name">updated_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-commerce">
+    <div class="table-header"><span class="icon">➕</span> cart_items</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">cart_id</span><span class="field-type">→ carts</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">sku_id</span><span class="field-type">→ skus</span></div>
+      <div class="field"><span class="field-name">quantity</span><span class="field-type">INT</span></div>
+    </div>
+  </div>
+
+  <div class="table group-commerce">
+    <div class="table-header"><span class="icon">❤️</span> wishlists</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk uk">FK/UK</span><span class="field-name">user_id</span><span class="field-type">→ users</span></div>
+      <div class="field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-commerce">
+    <div class="table-header"><span class="icon">💖</span> wishlist_items</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">wishlist_id</span><span class="field-type">→ wishlists</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">sku_id</span><span class="field-type">→ skus</span></div>
+      <div class="field"><span class="field-name">added_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-commerce">
+    <div class="table-header"><span class="icon">📋</span> orders</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">user_id</span><span class="field-type">→ users</span></div>
+      <div class="field"><span class="field-name">shipping_address</span><span class="field-type">TEXT (snapshot)</span></div>
+      <div class="field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+      <div class="field"><span class="field-name">total_amount</span><span class="field-type">DECIMAL(10,2)</span></div>
+      <div class="field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-commerce">
+    <div class="table-header"><span class="icon">📝</span> order_items</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">order_id</span><span class="field-type">→ orders</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">sku_id</span><span class="field-type">→ skus</span></div>
+      <div class="field"><span class="field-name">quantity</span><span class="field-type">INT</span></div>
+      <div class="field"><span class="field-name">unit_price</span><span class="field-type">DECIMAL(10,2) ⚑</span></div>
+      <div class="field"><span class="field-name">product_name</span><span class="field-type">VARCHAR(200) ⚑</span></div>
+    </div>
+  </div>
+
+  <div class="table group-aux">
+    <div class="table-header"><span class="icon">📜</span> order_status_history</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">order_id</span><span class="field-type">→ orders</span></div>
+      <div class="field"><span class="field-name">status</span><span class="field-type">ENUM</span></div>
+      <div class="field"><span class="field-name">note</span><span class="field-type">TEXT</span></div>
+      <div class="field"><span class="field-name">changed_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div style="grid-column: span 1;"></div>
+
+  <!-- PAYMENT -->
+  <div class="section-label">💳 Pagamento</div>
+
+  <div class="table group-payment">
+    <div class="table-header"><span class="icon">💳</span> payments</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk uk">FK/UK</span><span class="field-name">order_id</span><span class="field-type">→ orders</span></div>
+      <div class="field"><span class="field-name">method</span><span class="field-type">ENUM(PIX,BOLETO,CREDIT)</span></div>
+      <div class="field"><span class="field-name">status</span><span class="field-type">ENUM(PENDING,APPROVED,REJECTED,REFUNDED)</span></div>
+      <div class="field"><span class="field-name">amount</span><span class="field-type">DECIMAL(10,2)</span></div>
+      <div class="field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+      <div class="field"><span class="field-name">updated_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div style="grid-column: span 3;"></div>
+
+  <!-- REVIEWS -->
+  <div class="section-label">⭐ Avaliações</div>
+
+  <div class="table group-review">
+    <div class="table-header"><span class="icon">⭐</span> product_reviews</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">user_id</span><span class="field-type">→ users</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">product_id</span><span class="field-type">→ products</span></div>
+      <div class="field"><span class="field-name">rating</span><span class="field-type">TINYINT (1–5)</span></div>
+      <div class="field"><span class="field-name">comment</span><span class="field-type">TEXT</span></div>
+      <div class="field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div class="table group-review">
+    <div class="table-header"><span class="icon">🌟</span> order_reviews</div>
+    <div class="table-body">
+      <div class="field"><span class="badge pk">PK</span><span class="field-name">id</span><span class="field-type">BIGINT</span></div>
+      <div class="field"><span class="badge fk">FK</span><span class="field-name">user_id</span><span class="field-type">→ users</span></div>
+      <div class="field"><span class="badge fk uk">FK/UK</span><span class="field-name">order_id</span><span class="field-type">→ orders</span></div>
+      <div class="field"><span class="field-name">rating</span><span class="field-type">TINYINT (1–5)</span></div>
+      <div class="field"><span class="field-name">comment</span><span class="field-type">TEXT</span></div>
+      <div class="field"><span class="field-name">created_at</span><span class="field-type">TIMESTAMP</span></div>
+    </div>
+  </div>
+
+  <div style="grid-column: span 2;"></div>
+
+  <!-- NOTES -->
+  <div class="note">
+    <strong>⚑ Snapshot em order_items:</strong> <code>unit_price</code> e <code>product_name</code> são copiados no momento da compra. Se o admin mudar o preço do produto depois, o histórico de pedidos permanece correto.
+  </div>
+  <div class="note">
+    <strong>📍 Endereço em orders:</strong> <code>shipping_address</code> é um snapshot em texto (JSON ou string formatada) pelo mesmo motivo — o usuário pode mudar ou deletar um endereço sem afetar pedidos antigos.
+  </div>
+  <div class="note">
+    <strong>🔗 sku_attribute_values:</strong> Chave composta (sku_id + attribute_value_id). Ex: SKU #42 → RAM=16GB + Cor=Preta. Um produto "Notebook X" tem vários SKUs, cada um com uma combinação única de atributos.
+  </div>
+
+</div>
+</body>
+</html>
