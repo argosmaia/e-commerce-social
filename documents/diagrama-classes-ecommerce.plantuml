@@ -1,0 +1,245 @@
+@startuml
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam class {
+  BackgroundColor #FEF9E6
+  BorderColor #333
+  ArrowColor #2C3E50
+}
+skinparam stereotypeCBackgroundColor #E0E0E0
+
+' ========== ENUMS ==========
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAID
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  PIX
+  BOLETO
+  CREDIT
+}
+
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+' ========== CLASSES ==========
+class User {
+  + id: Long
+  + name: String
+  + email: String (unique)
+  + password_hash: String
+  + role: UserRole
+  + is_active: Boolean
+  + created_at: Timestamp
+}
+
+class Address {
+  + id: Long
+  + label: String
+  + street: String
+  + number: String
+  + complement: String
+  + city: String
+  + state: String (2)
+  + zip_code: String (9)
+  + is_default: Boolean
+}
+
+class Category {
+  + id: Long
+  + name: String
+  + slug: String
+  + is_active: Boolean
+}
+
+class Product {
+  + id: Long
+  + name: String
+  + description: String
+  + brand: String
+  + is_active: Boolean
+  + created_at: Timestamp
+}
+
+class ProductAttribute {
+  + id: Long
+  + name: String
+}
+
+class AttributeValue {
+  + id: Long
+  + value: String
+}
+
+class Sku {
+  + id: Long
+  + sku_code: String (unique)
+  + price: BigDecimal
+  + is_active: Boolean
+}
+
+class SkuAttributeValue {
+  + sku_id: Long
+  + attribute_value_id: Long
+}
+
+class Inventory {
+  + id: Long
+  + quantity: Integer
+  + updated_at: Timestamp
+}
+
+class ProductImage {
+  + id: Long
+  + url: String
+  + is_primary: Boolean
+  + sort_order: Integer
+}
+
+class Cart {
+  + id: Long
+  + updated_at: Timestamp
+}
+
+class CartItem {
+  + id: Long
+  + quantity: Integer
+}
+
+class Wishlist {
+  + id: Long
+  + created_at: Timestamp
+}
+
+class WishlistItem {
+  + id: Long
+  + added_at: Timestamp
+}
+
+class Order {
+  + id: Long
+  + shipping_address: String (snapshot)
+  + status: OrderStatus
+  + total_amount: BigDecimal
+  + created_at: Timestamp
+}
+
+class OrderItem {
+  + id: Long
+  + quantity: Integer
+  + unit_price: BigDecimal (snapshot)
+  + product_name: String (snapshot)
+}
+
+class OrderStatusHistory {
+  + id: Long
+  + status: OrderStatus
+  + note: String
+  + changed_at: Timestamp
+}
+
+class Payment {
+  + id: Long
+  + method: PaymentMethod
+  + status: PaymentStatus
+  + amount: BigDecimal
+  + created_at: Timestamp
+  + updated_at: Timestamp
+}
+
+class ProductReview {
+  + id: Long
+  + rating: Integer (1-5)
+  + comment: String
+  + created_at: Timestamp
+}
+
+class OrderReview {
+  + id: Long
+  + rating: Integer (1-5)
+  + comment: String
+  + created_at: Timestamp
+}
+
+' ========== RELACIONAMENTOS ==========
+
+' User <-> Address
+User "1" -- "0..*" Address : has
+
+' Category (auto-relacionamento)
+Category "0..1" -- "0..*" Category : parent
+
+' Product <-> Category
+Category "1" -- "0..*" Product : belongs to
+
+' Product <-> ProductAttribute
+Product "1" -- "0..*" ProductAttribute : defines
+
+' ProductAttribute <-> AttributeValue
+ProductAttribute "1" -- "0..*" AttributeValue : contains
+
+' Product <-> Sku
+Product "1" -- "0..*" Sku : has
+
+' Sku <-> AttributeValue (via SkuAttributeValue)
+Sku "1" -- "0..*" SkuAttributeValue
+AttributeValue "1" -- "0..*" SkuAttributeValue
+
+' Sku <-> Inventory
+Sku "1" -- "1" Inventory : has stock
+
+' Product <-> ProductImage
+Product "1" -- "0..*" ProductImage : illustrated by
+Sku "0..1" -- "0..*" ProductImage : (optional specific image)
+
+' User <-> Cart (1:1)
+User "1" -- "0..1" Cart : owns
+
+' Cart <-> CartItem
+Cart "1" -- "0..*" CartItem : contains
+Sku "1" -- "0..*" CartItem : referenced by
+
+' User <-> Wishlist (1:1)
+User "1" -- "0..1" Wishlist : owns
+
+' Wishlist <-> WishlistItem
+Wishlist "1" -- "0..*" WishlistItem : contains
+Sku "1" -- "0..*" WishlistItem : referenced by
+
+' User <-> Order
+User "1" -- "0..*" Order : places
+
+' Order <-> OrderItem
+Order "1" -- "1..*" OrderItem : includes
+Sku "1" -- "0..*" OrderItem : (historical reference)
+
+' Order <-> OrderStatusHistory
+Order "1" -- "1..*" OrderStatusHistory : has log
+
+' Order <-> Payment (1:1)
+Order "1" -- "0..1" Payment : has
+
+' User <-> ProductReview
+User "1" -- "0..*" ProductReview : writes
+Product "1" -- "0..*" ProductReview : receives
+
+' User <-> OrderReview
+User "1" -- "0..*" OrderReview : writes
+Order "1" -- "0..1" OrderReview : receives
+
+@enduml
