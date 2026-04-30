@@ -1,8 +1,9 @@
 version: "3.9"
 
 services:
+  # O Banco de Dados (Postgres 17)
   db:
-    image: postgres:16
+    image: postgres:17  # Mudei para 17 para garantir melhor suporte a UUIDv7
     container_name: postgres_ecommercesocial
     env_file:
       - .env
@@ -11,22 +12,35 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "9432:5432"
+      - "9432:5432" # Acessível externamente na 9432
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      # Volume persistente (para não perder dados se reiniciar)
+      - pgdata_v17:/var/lib/postgresql/data 
       - ./docker/init:/docker-entrypoint-initdb.d
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_SUPER_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
+  # Sua Aplicação Spring Boot
   app:
     build: .
     container_name: ecommerce_api
     env_file:
       - .env
+    environment:
+      # [IMPORTANTE] Sobrescreve a URL para usar o nome do container "db"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_SUPER_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_SUPER_PASSWORD}
     depends_on:
-      - db
+      db:
+        condition: service_healthy # Só inicia o app quando o banco estiver pronto
     ports:
       - "8080:8080"
     restart: unless-stopped
 
 volumes:
-  pgdata:
+  pgdata_v17: # Criei um volume novo pra garantir que não pegue lixo do 14
