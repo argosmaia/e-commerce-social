@@ -29,7 +29,7 @@ public interface UsuarioMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "cpf", ignore = true)
-    @Mapping(target = "idade", ignore = true)
+   // @Mapping(target = "idade", ignore = true)
     @Mapping(target = "senha", ignore = true)
     void atualizar(@MappingTarget Usuario usuario, AtualizarUsuarioDTO dto);
 }

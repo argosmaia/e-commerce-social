@@ -14,7 +14,7 @@ public record UsuarioDTO(
     String telefone,
     String email,
     LocalDateTime dataNascimento,
-    int idade,
+    //int idade,
     String cpf
     // List<Desejo> desejos,
     // List<Compra> compras
@@ -29,7 +29,7 @@ public record UsuarioDTO(
             usuario.getTelefone(),
             usuario.getEmail(),
             usuario.getDataNascimento(),
-            usuario.getIdade(),
+            //usuario.getIdade(),
             usuario.getCpf()
             // usuario.getDesejos(),
             // usuario.getCompras()

@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 
 import ammm_tech_labs.e_commerce_mvp.dto.create.CriarProdutoDTO;
 

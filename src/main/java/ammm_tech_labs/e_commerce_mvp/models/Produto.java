@@ -28,11 +28,11 @@ public class Produto {
     private UUID id;
     // Referenciar Loja por ID para evitar acoplamento direto futuramente
     @Column(unique = true, nullable = false) private String nome;
-    @Column(precision = 10, scale = 2) private BigDecimal preco;
+    @Column private BigDecimal preco;
     @Column(name = "foto_url") private String fotoUrl;
     @Column(length = 500) private String descricao;
     // private Categoria categoria; // futuramente usar enum ou entidade para categorias
-    @Column(precision = 3, scale = 2) private Double avaliacaoMedia; 
+    @Column private Double avaliacaoMedia; 
 
     // Construtor para criação de produto, sem ID
     public Produto(String nome, BigDecimal preco, String fotoUrl, String descricao) {

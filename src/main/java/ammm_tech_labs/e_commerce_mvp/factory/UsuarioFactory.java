@@ -6,7 +6,7 @@ import java.util.Locale;
 
 import org.springframework.stereotype.Component;
 
-import com.github.javafaker.Faker;
+import net.datafaker.Faker;
 
 import ammm_tech_labs.e_commerce_mvp.dto.create.CriarUsuarioDTO;
 import ammm_tech_labs.e_commerce_mvp.validations.CPFValido;
@@ -26,7 +26,7 @@ public class UsuarioFactory {
                 String username = gerarUsernameFake(nome, sobrenome);
                 String email = gerarEmailFake(nome, sobrenome);
                 LocalDateTime aniversario = gerarAniversarioAdultoFake();
-                int idade = calcularIdadeFake(aniversario);
+                //int idade = calcularIdadeFake(aniversario);
                 String senha = faker.internet().password(8, 16, true, true, true);
                 String telefone = CelularValido.gerar();
 
@@ -38,7 +38,7 @@ public class UsuarioFactory {
                                 username,
                                 senha,
                                 telefone,
-                                idade,
+                                //idade,
                                 email,
                                 aniversario,
                                 CPFValido.gerar()

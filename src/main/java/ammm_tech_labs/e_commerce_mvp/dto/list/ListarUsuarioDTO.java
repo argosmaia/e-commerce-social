@@ -8,16 +8,16 @@ public record ListarUsuarioDTO(
     UUID id,
     String primeiroNome,
     String ultimoNome,
-    String username,
-    int idade
+    String username
+    //int idade
 ) {
     public ListarUsuarioDTO(Usuario usuario) {
         this(
             usuario.getId(),
             usuario.getPrimeiroNome(),
             usuario.getUltimoNome(),
-            usuario.getUsername(),
-            usuario.getIdade()
+            usuario.getUsername()
+            //usuario.getIdade()
         );
     }
 }

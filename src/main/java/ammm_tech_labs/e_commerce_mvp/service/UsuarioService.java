@@ -42,7 +42,6 @@ public class UsuarioService {
 				dados.telefone(),
 				dados.email(),
 				dados.dataNascimento(),
-				dados.idade(),
 				dados.cpf()
 		);
 
@@ -56,7 +55,7 @@ public class UsuarioService {
 
 	public APIResponse<Page<ListarUsuarioDTO>> listarUsuarios(Pageable paginacao) {
 		var paginas = usuarios.findAll(paginacao)
-						.map(usuario -> mapper.toListarDTO(usuario));
+						.map(usuario -> mapper.toDTO((Usuario) usuario));
 		return APIResponse.sucesso("Lista de usuários", paginas);
 }
 
@@ -68,6 +67,16 @@ public class UsuarioService {
 		return APIResponse.sucesso(
 				"Usuário encontrado",
 				mapper.toVerDTO(usuario)
+		);
+	}
+
+	public APIResponse<UsuarioDTO> buscarPorUsername(String username) {
+		var usuario = usuarios.findByUsername(username)
+				.orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+		return APIResponse.sucesso(
+				"Usuário encontrado",
+				mapper.toDTO(usuario)
 		);
 	}
 
