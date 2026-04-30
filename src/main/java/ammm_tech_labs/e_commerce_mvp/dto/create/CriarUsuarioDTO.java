@@ -16,7 +16,7 @@ public record CriarUsuarioDTO(
     @NotBlank String username,
     @NotBlank @Size(min = 8, max = 16) String senha,
     @NotBlank @Size(min = 12, max = 13) String telefone,
-    @NotNull int idade,
+    //@NotNull int idade,
     @NotBlank @Email String email,
     @NotNull @DateTimeFormat(pattern = "dd/MM/yyyy") LocalDateTime dataNascimento,
     @NotBlank @Pattern(regexp = "\\d{11}") String cpf

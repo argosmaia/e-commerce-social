@@ -1,39 +1,41 @@
 package ammm_tech_labs.e_commerce_mvp.security;
 
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-import java.security.Key;
+import java.util.Date;
+
+import javax.crypto.SecretKey;
+
+import io.jsonwebtoken.Jwts;
 
 public class JwtUtil {
     
-    private static final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private static final long EXPIRATION_TIME = 86400000; // 1 dia em milissegundos
+    private static final SecretKey key = Jwts.SIG.HS256.key().build();
+    private static final long EXPIRATION_TIME = 86400000L; // 1 dia em milissegundos
 
     public static String generateToken(String username) {
         long now = System.currentTimeMillis();
-        return io.jsonwebtoken.Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new java.util.Date(now))
-                .setExpiration(new java.util.Date(now + EXPIRATION_TIME))
+        return Jwts.builder()
+                .subject(username)
+                .issuedAt(new Date(now))    
+                .expiration(new Date(now + EXPIRATION_TIME)) 
                 .signWith(key)
                 .compact();
     }
 
     public static String extractUsername(String token){
-        return io.jsonwebtoken.Jwts.parserBuilder()
-                .setSigningKey(key)
+        return io.jsonwebtoken.Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 
     public static boolean isTokenValid(String token){
         try {
-            io.jsonwebtoken.Jwts.parserBuilder()
-                .setSigningKey(key)
+            Jwts.parser()
+                .verifyWith(key)
                 .build()
-                .parseClaimsJws(token);
+                .parseSignedClaims(token);
             return true;
         } catch (io.jsonwebtoken.JwtException | IllegalArgumentException e) {
             return false;

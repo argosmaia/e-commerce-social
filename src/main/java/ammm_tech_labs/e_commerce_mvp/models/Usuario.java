@@ -42,7 +42,7 @@ public class Usuario {
     private String email;
 
     private LocalDateTime dataNascimento;
-    private int idade;
+    //private int idade;
 
     @Column(unique = true, nullable = false)
     private String cpf;
@@ -56,7 +56,7 @@ public class Usuario {
             String telefone,
             String email,
             LocalDateTime dataNascimento,
-            int idade,
+            //int idade,
             String cpf) {
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
@@ -65,7 +65,7 @@ public class Usuario {
         this.telefone = telefone;
         this.email = email;
         this.dataNascimento = dataNascimento;
-        this.idade = idade;
+        //this.idade = idade;
         this.cpf = cpf;
     }
 
@@ -89,7 +89,7 @@ public class Usuario {
 
     public void setDataNascimento(LocalDateTime dataNascimento) {
         this.dataNascimento = dataNascimento;
-        this.idade = Period.between(dataNascimento.toLocalDate(), LocalDate.now()).getYears();
+        //this.idade = Period.between(dataNascimento.toLocalDate(), LocalDate.now()).getYears();
     }
 
     public void atualizar(String primeiroNome, String ultimoNome, String username, String telefone, String email,
@@ -104,4 +104,12 @@ public class Usuario {
             setDataNascimento(dataNascimento);
         }
     }
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
+    
+    public String getSenha() {
+        return senha;
+    }
+
 }

@@ -5,7 +5,6 @@ import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Component;
 
-import ammm_tech_labs.e_commerce_mvp.dto.create.CriarUsuarioDTO;
 import ammm_tech_labs.e_commerce_mvp.factory.UsuarioFactory;
 import ammm_tech_labs.e_commerce_mvp.maps.UsuarioMapper;
 import ammm_tech_labs.e_commerce_mvp.models.Usuario;
